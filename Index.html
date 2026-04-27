@@ -35,15 +35,15 @@
         /* --- ALBUM --- */
         .category-title { width: 100%; text-align: left; margin: 20px 0 10px 0; border-left: 4px solid var(--accent); padding-left: 10px; color: var(--accent); font-size: 0.8rem; text-transform: uppercase; }
         .collection-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
-        .card { background: var(--card-bg); border-radius: 8px; padding: 8px; border: 1px solid #334155; position: relative; height: 100px; display: flex; flex-direction: column; justify-content: center; cursor: pointer; }
+        .card { background: var(--card-bg); border-radius: 8px; padding: 8px; border: 1px solid #334155; position: relative; height: 110px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; }
         .card.locked { opacity: 0.2; filter: grayscale(1); cursor: default; }
-        .card-count { position: absolute; top: -5px; right: -5px; background: var(--accent); color: #000; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; }
+        .card-count { position: absolute; top: -5px; right: -5px; background: var(--accent); color: #000; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; z-index: 2; }
         .card-info-mini { font-size: 0.6rem; color: #94a3b8; margin-top: 5px; }
 
         /* --- DETTAGLIO --- */
         #card-detail-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; justify-content: center; align-items: center; }
         .detail-view { background: var(--card-bg); width: 85%; max-width: 350px; border-radius: 20px; padding: 25px; border: 2px solid var(--accent); text-align: center; }
-        .detail-emoji { font-size: 4rem; margin-bottom: 10px; }
+        .detail-emoji { margin-bottom: 15px; min-height: 100px; display: flex; align-items: center; justify-content: center; }
         .detail-desc { font-style: italic; color: #94a3b8; margin: 15px 0; font-size: 0.85rem; line-height: 1.4; }
         .detail-effect { background: #0f172a; padding: 12px; border-radius: 10px; border: 1px dashed var(--accent); font-size: 0.8rem; text-align: left; }
         .stats-badge { display: inline-block; background: var(--primary); padding: 5px 10px; border-radius: 5px; font-size: 0.7rem; margin: 5px; }
@@ -95,24 +95,22 @@
 
     <script>
         const cardDatabase = [
-            // --- TIPI DA BAR ---
-            { id: 1, cat: "Tipo da bar", name: "Bill", emoji: "🧔", level: 1, defense: 10, desc: "Tifa inter e fuma le sigarette tutto il giorno, campione di scala 40.", effect: "Tira una nebbia di fumo che riduce la precisione avversaria." },
-            { id: 2, cat: "Tipo da bar", name: "Paolone", emoji: "🦍", level: 2, defense: 20, desc: "Il bodyguard di Longiano, ti attacca pezza e governa il paese, futuro sindaco.", effect: "Comizio: Ti parla per ore finché non ti addormenti sulla sedia." },
-            { id: 3, cat: "Tipo da bar", name: "Cugino di coppa", emoji: "🏆", level: 3, defense: 30, desc: "Il babbo natale che tutti i bambini non sognano.", effect: "Regalo Sgradito: Ti regala una coppa di plastica che ingombra la tua difesa." },
-            { id: 4, cat: "Tipo da bar", name: "Pallo", emoji: "⚽", level: 4, defense: 40, desc: "L'idolo delle folle.", effect: "Ovation: La curva canta per lui, aumentando la sua resistenza." },
-            { id: 5, cat: "Tipo da bar", name: "Vecchietto", emoji: "👴", level: 5, defense: 50, desc: "Anni di esperienza a briscola, secondo lui tu rovini il paese mentre ti insulta e incassa la pensione. Esperto.", effect: "Critica Cantiere: Ti guarda le mani e ti corregge la mossa facendoti sentire un incapace." },
-            // --- BEVANDE ---
-            { id: 6, cat: "Bevanda", name: "Birra Moretti", emoji: "🍺", desc: "Ubriaca il personaggio che diventa imprevedibile.", effect: "MONETA: Testa -> Difesa x3 | Croce -> Difesa /2." },
-            { id: 7, cat: "Bevanda", name: "Coca Cola", emoji: "🥤", desc: "Diventi un personaggio anonimo che non attirerà l'attenzione.", effect: "ANONIMO: Non puoi essere attaccato al prossimo turno." },
-            { id: 8, cat: "Bevanda", name: "Prosecchino", emoji: "🥂", desc: "Sei con una figa e mandi fuori di testa il vecchietto.", effect: "INVIDIA: Se l'avversario ha un Vecchietto, la sua difesa si dimezza." },
-            { id: 9, cat: "Bevanda", name: "Suchino alla pera", emoji: "🧃", desc: "Il potere di Beppe è con te, andate in bagno su un piano caldo.", effect: "BOOST CALDO: La tua difesa raddoppia per questo turno." },
-            { id: 10, cat: "Bevanda", name: "Cedrata", emoji: "🍋", desc: "Se prendi questa bevanda al bar c'è qualcosa in te che non va.", effect: "DISPREZZO: Nessun effetto pratico, solo vergogna davanti ai presenti." },
-            // --- AZIONI ---
-            { id: 11, cat: "Azione da bar", name: "Scatarrata", emoji: "💦", damage: 5, desc: "Dopo essersi scofanato la ciotola di ragù ed esserti sporcato la camicia, attacchi l'avversario.", effect: "DANNO FISICO: 5 danni da schizzo." },
-            { id: 12, cat: "Azione da bar", name: "Bevuta", emoji: "🍻", damage: 10, desc: "Sorsata ignorante che ti dà la carica per il prossimo insulto.", effect: "DANNO: 10." },
-            { id: 13, cat: "Azione da bar", name: "Cala la briscola", emoji: "🃏", damage: 15, desc: "Mossa violenta che fa sobbalzare i bicchieri sul tavolino.", effect: "DANNO: 15." },
-            { id: 14, cat: "Azione da bar", name: "Bestemmia", emoji: "🤬", damage: 25, desc: "Un urlo che gela il sangue a tutto il circolo ARCI.", effect: "DANNO SONORO: 25." },
-            { id: 15, cat: "Azione da bar", name: "Insultare i giovani", emoji: "🖕", damage: 20, desc: "Ai miei tempi non c'erano i telefoni, solo fango e lavoro!", effect: "DANNO MORALE: 20." }
+            // NOTA: Se la tua cartella su GitHub si chiama "img", cambia "imag" in "img" qui sotto!
+            { id: 1, cat: "Tipo da bar", name: "Bill", emoji: "🧔", image: "imag/bill.webp", level: 1, defense: 10, desc: "Tifa inter e fuma le sigarette tutto il giorno, campione di scala 40.", effect: "Tira una nebbia di fumo che riduce la precisione avversaria." },
+            { id: 2, cat: "Tipo da bar", name: "Paolone", emoji: "🦍", image: "imag/paolone.webp", level: 2, defense: 20, desc: "Il bodyguard di Longiano, ti attacca pezza e governa il paese, futuro sindaco.", effect: "Comizio: Ti parla per ore finché non ti addormenti sulla sedia." },
+            { id: 3, cat: "Tipo da bar", name: "Cugino di coppa", emoji: "🏆", image: "imag/cugino.webp", level: 3, defense: 30, desc: "Il babbo natale che tutti i bambini non sognano.", effect: "Regalo Sgradito: Ti regala una coppa di plastica che ingombra la tua difesa." },
+            { id: 4, cat: "Tipo da bar", name: "Pallo", emoji: "⚽", image: "imag/pallo.webp", level: 4, defense: 40, desc: "L'idolo delle folle.", effect: "Ovation: La curva canta per lui, aumentando la sua resistenza." },
+            { id: 5, cat: "Tipo da bar", name: "Vecchietto", emoji: "👴", image: "imag/vecchietto.webp", level: 5, defense: 50, desc: "Anni di esperienza a briscola, secondo lui tu rovini il paese mentre ti insulta e incassa la pensione. Esperto.", effect: "Critica Cantiere: Ti guarda le mani e ti corregge la mossa facendoti sentire un incapace." },
+            { id: 6, cat: "Bevanda", name: "Birra Moretti", emoji: "🍺", image: "imag/birra.webp", desc: "Ubriaca il personaggio che diventa imprevedibile.", effect: "MONETA: Testa -> Difesa x3 | Croce -> Difesa /2." },
+            { id: 7, cat: "Bevanda", name: "Coca Cola", emoji: "🥤", image: "imag/coca.webp", desc: "Diventi un personaggio anonimo che non attirerà l'attenzione.", effect: "ANONIMO: Non puoi essere attaccato al prossimo turno." },
+            { id: 8, cat: "Bevanda", name: "Prosecchino", emoji: "🥂", image: "imag/prosecco.webp", desc: "Sei con una figa e mandi fuori di testa il vecchietto.", effect: "INVIDIA: Se l'avversario ha un Vecchietto, la sua difesa si dimezza." },
+            { id: 9, cat: "Bevanda", name: "Suchino alla pera", emoji: "🧃", image: "imag/suchino.webp", desc: "Il potere di Beppe è con te, andate in bagno su un piano caldo.", effect: "BOOST CALDO: La tua difesa raddoppia per questo turno." },
+            { id: 10, cat: "Bevanda", name: "Cedrata", emoji: "🍋", image: "imag/cedrata.webp", desc: "Se prendi questa bevanda al bar c'è qualcosa in te che non va.", effect: "DISPREZZO: Nessun effetto pratico, solo vergogna davanti ai presenti." },
+            { id: 11, cat: "Azione da bar", name: "Scatarrata", emoji: "💦", image: "imag/scatarra.webp", damage: 5, desc: "Dopo essersi scofanato la ciotola di ragù ed esserti sporcato la camicia, attacchi l'avversario.", effect: "DANNO FISICO: 5 danni da schizzo." },
+            { id: 12, cat: "Azione da bar", name: "Bevuta", emoji: "🍻", image: "imag/bevuta.webp", damage: 10, desc: "Sorsata ignorante che ti dà la carica per il prossimo insulto.", effect: "DANNO: 10." },
+            { id: 13, cat: "Azione da bar", name: "Cala la briscola", emoji: "🃏", image: "imag/briscola.webp", damage: 15, desc: "Mossa violenta che fa sobbalzare i bicchieri sul tavolino.", effect: "DANNO: 15." },
+            { id: 14, cat: "Azione da bar", name: "Bestemmia", emoji: "🤬", image: "imag/bestemmia.webp", damage: 25, desc: "Un urlo che gela il sangue a tutto il circolo ARCI.", effect: "DANNO SONORO: 25." },
+            { id: 15, cat: "Azione da bar", name: "Insultare i giovani", emoji: "🖕", image: "imag/insulto.webp", damage: 20, desc: "Ai miei tempi non c'erano i telefoni, solo fango e lavoro!", effect: "DANNO MORALE: 20." }
         ];
 
         let userData = { collection: JSON.parse(localStorage.getItem('userCardsBar')) || {} };
@@ -123,43 +121,38 @@
             if(id === 'screen-list') renderCollection();
         }
 
-function handleOpenPack() {
-    const pack = document.getElementById('main-pack');
-    const results = document.getElementById('pack-results');
-    if(pack.classList.contains('opening')) return;
-
-    pack.classList.add('opening');
-
-    setTimeout(() => {
-        pack.style.display = 'none';
-        for(let i=0; i<3; i++) {
+        function handleOpenPack() {
+            const pack = document.getElementById('main-pack');
+            const results = document.getElementById('pack-results');
+            if(pack.classList.contains('opening')) return;
+            pack.classList.add('opening');
             setTimeout(() => {
-                const card = cardDatabase[Math.floor(Math.random() * cardDatabase.length)];
-                
-                // Salva i dati
-                userData.collection[card.id] = (userData.collection[card.id] || 0) + 1;
-                localStorage.setItem('userCardsBar', JSON.stringify(userData.collection));
+                pack.style.display = 'none';
+                for(let i=0; i<3; i++) {
+                    setTimeout(() => {
+                        const card = cardDatabase[Math.floor(Math.random() * cardDatabase.length)];
+                        userData.collection[card.id] = (userData.collection[card.id] || 0) + 1;
+                        localStorage.setItem('userCardsBar', JSON.stringify(userData.collection));
+                        const el = document.createElement('div');
+                        el.className = 'new-card-anim';
+                        el.style.cursor = 'pointer';
+                        
+                        // Immagine o Emoji nello sbusto
+                        const cardVisual = card.image ? 
+                            `<img src="${card.image}" style="width:100%; height:50px; object-fit:cover; border-radius:5px;">` : 
+                            `<div style="font-size:1.5rem">${card.emoji}</div>`;
 
-                // Crea l'elemento visivo
-                const el = document.createElement('div');
-                el.className = 'new-card-anim';
-                el.style.cursor = 'pointer'; // Fa capire che si può cliccare
-                
-                el.innerHTML = `
-                    <div style="font-size:1.5rem">${card.emoji}</div>
-                    <small style="font-size:0.6rem">${card.name}</small>
-                `;
-
-                // Permette di vedere il dettaglio subito!
-                el.onclick = () => showDetail(card);
-
-                results.appendChild(el);
-
-                if(i === 2) document.getElementById('btn-continue').style.display = 'block';
-            }, i * 400);
+                        el.innerHTML = `
+                            ${cardVisual}
+                            <small style="font-size:0.6rem; display:block; margin-top:5px;">${card.name}</small>
+                        `;
+                        el.onclick = () => showDetail(card);
+                        results.appendChild(el);
+                        if(i === 2) document.getElementById('btn-continue').style.display = 'block';
+                    }, i * 400);
+                }
+            }, 600);
         }
-    }, 600);
-}
 
         function resetPackScreen() {
             document.getElementById('main-pack').style.display = 'flex';
@@ -169,81 +162,59 @@ function handleOpenPack() {
             showScreen('screen-list');
         }
 
-function renderCollection() {
-    const container = document.getElementById('collection-content');
-    container.innerHTML = '';
-    
-    // Definiamo le categorie nell'ordine esatto in cui vogliamo vederle
-    const cats = ["Tipo da bar", "Bevanda", "Azione da bar"];
-    
-    cats.forEach(cat => {
-        // Aggiungiamo il titolo della categoria
-        const titleEl = document.createElement('div');
-        titleEl.className = 'category-title';
-        titleEl.innerText = cat;
-        container.appendChild(titleEl);
-
-        // Creiamo la griglia per le carte di questa categoria
-        const grid = document.createElement('div');
-        grid.className = 'collection-grid';
-        
-        // FILTRIAMO LE CARTE: Prendi tutte le carte che appartengono a questa categoria
-        const cardsInCategory = cardDatabase.filter(c => c.cat === cat);
-        
-        cardsInCategory.forEach(card => {
-            const count = userData.collection[card.id] || 0; // Quante ne ho?
-            const isLocked = count === 0; // Se ne ho 0, è bloccata
+        function renderCollection() {
+            const container = document.getElementById('collection-content');
+            container.innerHTML = '';
+            const cats = ["Tipo da bar", "Bevanda", "Azione da bar"];
             
-            const cardEl = document.createElement('div');
-            cardEl.className = `card ${isLocked ? 'locked' : ''}`;
-            
-            // Costruiamo il contenuto visivo della carta
-            cardEl.innerHTML = `
-                ${count > 1 ? `<div class="card-count">x${count}</div>` : ''}
-                <div style="font-size:2rem">${card.emoji}</div>
-                <div style="font-size:0.65rem; font-weight:bold;">${card.name}</div>
-                <div class="card-info-mini">
-                    ${card.level ? 'Liv. ' + card.level : ''}
-                    ${card.damage ? 'Danno: ' + card.damage : ''}
-                    ${card.cat === 'Bevanda' && !isLocked ? 'Power-up' : ''}
-                </div>
-            `;
+            cats.forEach(cat => {
+                const titleEl = document.createElement('div');
+                titleEl.className = 'category-title';
+                titleEl.innerText = cat;
+                container.appendChild(titleEl);
 
-            // ATTENZIONE: Abilitiamo il click solo se la carta è stata trovata (count > 0)
-            if (!isLocked) {
-                cardEl.onclick = () => {
-                    console.log("Apertura dettaglio per:", card.name); // Debug per vedere se funziona
-                    showDetail(card);
-                };
-            }
-            
-            grid.appendChild(cardEl);
-        });
-        
-        container.appendChild(grid);
-    });
-}
+                const grid = document.createElement('div');
+                grid.className = 'collection-grid';
+                const cardsInCategory = cardDatabase.filter(c => c.cat === cat);
+                
+                cardsInCategory.forEach(card => {
+                    const count = userData.collection[card.id] || 0;
+                    const isLocked = count === 0;
+                    const cardEl = document.createElement('div');
+                    cardEl.className = `card ${isLocked ? 'locked' : ''}`;
+                    
+                    // CORREZIONE QUI: Logica immagine nell'album
+                    const cardVisual = card.image ? 
+                        `<img src="${card.image}" style="width:100%; height:60px; object-fit:cover; border-radius:5px;">` : 
+                        `<div style="font-size:2rem">${card.emoji}</div>`;
 
-// Assicurati che showDetail sia definita così per gestire tutti i campi:
-function showDetail(card) {
-    document.getElementById('det-emoji').innerText = card.emoji;
-    document.getElementById('det-name').innerText = card.name;
-    document.getElementById('det-desc').innerText = card.desc;
-    document.getElementById('det-effect').innerText = card.effect;
-    
-    let badges = `<span class="stats-badge">${card.cat}</span>`;
-    
-    // Aggiungi badge dinamici in base al tipo di carta
-    if(card.level) badges += `<span class="stats-badge">LIVELLO ${card.level}</span>`;
-    if(card.defense) badges += `<span class="stats-badge" style="background:#10b981">DIFESA: ${card.defense}</span>`;
-    if(card.damage) badges += `<span class="stats-badge" style="background:var(--danger)">DANNO: ${card.damage}</span>`;
-    
-    document.getElementById('det-badges').innerHTML = badges;
-    document.getElementById('card-detail-overlay').style.display = 'flex';
-}
+                    cardEl.innerHTML = `
+                        ${count > 1 ? `<div class="card-count">x${count}</div>` : ''}
+                        ${cardVisual}
+                        <div style="font-size:0.65rem; font-weight:bold; margin-top:5px;">${card.name}</div>
+                        <div class="card-info-mini">
+                            ${card.level ? 'Liv. ' + card.level : ''}
+                            ${card.damage ? 'Danno: ' + card.damage : ''}
+                        </div>
+                    `;
+
+                    if (!isLocked) {
+                        cardEl.onclick = () => showDetail(card);
+                    }
+                    grid.appendChild(cardEl);
+                });
+                container.appendChild(grid);
+            });
+        }
 
         function showDetail(card) {
-            document.getElementById('det-emoji').innerText = card.emoji;
+            const emojiElement = document.getElementById('det-emoji');
+            if (card.image) {
+                emojiElement.innerHTML = `<img src="${card.image}" style="width: 100%; max-width: 200px; border-radius: 15px; border: 3px solid var(--accent); box-shadow: 0 5px 15px rgba(0,0,0,0.5);">`;
+            } else {
+                emojiElement.innerHTML = `<span style="font-size:4rem">${card.emoji}</span>`;
+            }
+
             document.getElementById('det-name').innerText = card.name;
             document.getElementById('det-desc').innerText = card.desc;
             document.getElementById('det-effect').innerText = card.effect;
